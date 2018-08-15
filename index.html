@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="charts.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Data Dashboard</title>
+  </head>
+  <body style="margin:0px; padding-top: 60px;">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Data Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="#">Index<span class="sr-only">Current</span></a>
+          </div>
+        </div>
+    </nav>
+    <div id="container" class="container-fluid">
+			<div id="jumbotron" class="jumbotron">
+        <h4>Data Dashboard using Angularjs v1.7 & d3 v5</h4>
+        <div ng-app="myApp" ng-controller="Ctrl">
+          <bars-chart chart-data="myData"></bars-chart>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
