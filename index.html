@@ -25,7 +25,31 @@
 			<div id="jumbotron" class="jumbotron">
         <h4>Data Dashboard using Angularjs v1.7 & d3 v5</h4>
         <div ng-app="myApp" ng-controller="Ctrl">
-          <bars-chart chart-data="myData"></bars-chart>
+          <div class="row">
+            <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
+              <div class="card">
+                <h4 class="card-header">Horizontal Bars</h4>
+                <div class="card-body">
+                  <h-bars-chart chart-data="myData_2"></h-bars-chart>
+                  <h5 class="card-title">Special title treatment</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
+              <div class="card">
+                <h4 class="card-header">Vertical Bars</h4>
+                <div class="card-body">
+                  <v-bars-chart chart-data="myData_2"></v-bars-chart>
+                  <h5 class="card-title">Special title treatment</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- row -->
         </div>
       </div>
     </div>

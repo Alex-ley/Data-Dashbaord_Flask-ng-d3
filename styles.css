@@ -1,5 +1,7 @@
 .chart {
-    background: #eee;
+    /* background: #eee; */
+    /* background: white; */
+    border: 1px solid black;
     padding: 3px;
 }
 
@@ -12,10 +14,33 @@
 
 .chart div {
   font: 10px sans-serif;
-  background-color: steelblue;
+  /* background-color: steelblue; */
+  background-color: #262262;
   text-align: right;
   padding: 3px;
   margin: 5px;
   color: white;
-  box-shadow: 2px 2px 2px #666;
+  /* box-shadow: 2px 2px 2px #666; */
+}
+
+.bar {
+    fill: #262262;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    visibility: hidden;
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.graph {
+  width: 100%;
+  position: relative;
 }
