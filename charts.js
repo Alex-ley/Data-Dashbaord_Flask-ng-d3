@@ -27,20 +27,28 @@ var app = angular.module('myApp', []);
 		}];
 
 		$scope.myData_2 = [{
-			 "name": "Current",
-			 "value": 100
+			 "name": "Jan",
+			 "value": 300
 		},
 		{
-			 "name": "Planned",
+			 "name": "Feb",
 			 "value": 1000
 		},
  		{
-			"name": "Test",
+			"name": "Mar",
 			"value": 600
 		},
  		{
-			"name": "Test_2",
-			"value": 1200
+			"name": "Apr",
+			"value": 1400
+		},
+		{
+			"name": "May",
+			"value": 800
+		},
+ 		{
+			"name": "Jun",
+			"value": 950
 		}];
 
     // $http.get('myData.json').then(function(response){
@@ -103,16 +111,16 @@ var app = angular.module('myApp', []);
 				 replace: false,
 				 scope: {data: '=chartData'},
 				 link: function (scope, element, attrs) {
-
+					var color = d3.scaleOrdinal(d3.schemeCategory10);
 					var card = d3.select(element[0]).node().parentNode;
 					// console.log(card.getBoundingClientRect());
 
 	        var margin = {top: 0, right: 50, bottom: 30, left: 50},
-							full_width = card.getBoundingClientRect().width
+							full_width = 600 //card.getBoundingClientRect().width
 							width = full_width - margin.left - margin.right,
 							// width = 600 - margin.left - margin.right,
 							// height = 400 - margin.top - margin.bottom;
-							full_height = card.getBoundingClientRect().width * (2/3),
+							full_height = full_width * (2/3),
 	            height = full_height - margin.top - margin.bottom;
 
 					var x = d3.scaleLinear()
@@ -150,8 +158,9 @@ var app = angular.module('myApp', []);
 	            .data(scope.data);
 	        bar.enter().append("rect")
 	            .attr("class", "bar")
-	            .attr("x", function(d) { return x(0); })
+	            .attr("x", function(d) { return x(2); })
 	            .attr("y", function(d) { return y(d.name); })
+							.attr("fill", function(d, i) { return color(i); } )
 	            .attr("width", function(d) { return x(d.value); })
 	            .attr("height", y.bandwidth());
 	        chart.selectAll(".text")
@@ -181,17 +190,17 @@ var app = angular.module('myApp', []);
 				 replace: false,
 				 scope: {data: '=chartData'},
 				 link: function (scope, element, attrs) {
-
+					var color = d3.scaleOrdinal(d3.schemeCategory10);
 					var card = d3.select(element[0]).node().parentNode;
 					// console.log(card.getBoundingClientRect());
 
 	        var margin = {top: 20, right: 30, bottom: 30, left: 40},
-							full_width = card.getBoundingClientRect().width
+							full_width = 600 //card.getBoundingClientRect().width
 							width = full_width - margin.left - margin.right,
 							// width = 600 - margin.left - margin.right,
 							// height = 400 - margin.top - margin.bottom;
-							full_height = card.getBoundingClientRect().width * (2/3),
-	            height = full_height - margin.top - margin.bottom;
+							full_height = full_width * (2/3),
+							height = full_height - margin.top - margin.bottom;
 
 	        var x = d3.scaleBand()
 	            .rangeRound([0, width])
@@ -199,7 +208,8 @@ var app = angular.module('myApp', []);
 	        var y = d3.scaleLinear()
 	            .range([height, 0]);
 	        var xAxis = d3.axisBottom(x);
-	        var yAxis = d3.axisLeft(y);
+	        var yAxis = d3.axisLeft(y)
+							.ticks(8);
 					var div = d3.select(element[0]).append("div")
 							.classed("graph", true);
 					div.append("canvas") //To allow correct dynamic sizing for IE
@@ -229,6 +239,7 @@ var app = angular.module('myApp', []);
 	            .attr("class", "bar")
 	            .attr("x", function(d) { return x(d.name); })
 	            .attr("y", function(d) { return y(d.value); })
+							.attr("fill", function(d, i) { return color(i); } )
 	            .attr("height", function(d) { return height - y(d.value); })
 	            .attr("width", x.bandwidth());
 	        chart.selectAll(".text")
@@ -242,6 +253,112 @@ var app = angular.module('myApp', []);
 	            .attr("y", function(d) { return y(d.value) - 15; })
 	            .attr("dy", ".75em")
 	            .text(function(d) { return d.value.toFixed(0); });
+
+				 }
+			};
+			return directiveDefinitionObject;
+	 }]);
+
+	 app.directive('pieChart', ['$parse', function ($parse) {
+		 var directiveDefinitionObject = {
+				 restrict: 'E',
+				 replace: false,
+				 scope: {data: '=chartData'},
+				 link: function (scope, element, attrs) {
+
+					var card = d3.select(element[0]).node().parentNode;
+					// console.log(card.getBoundingClientRect());
+
+					var margin = {top: 20, right: 30, bottom: 30, left: 40},
+							full_width = 600 //card.getBoundingClientRect().width
+							width = full_width - margin.left - margin.right,
+							// width = 600 - margin.left - margin.right,
+							// height = 400 - margin.top - margin.bottom;
+							full_height = full_width * (2/3),
+							height = full_height - margin.top - margin.bottom;
+
+					var w = full_width, //300,                       			//width
+			 	    h = full_height, //300,                         		//height
+			 	    r = Math.min(full_width, full_height) / 2; //100,  	//radius
+			 	    // color = d3.scale.category20c(); //V3
+			 			color = d3.scaleOrdinal(d3.schemeCategory10);     //builtin range of colors V5
+
+					var div = d3.select(element[0]).append("div")
+							.classed("graph", true);
+					div.append("canvas") //To allow correct dynamic sizing for IE
+							.attr("width", full_width)
+							.attr("height", full_height);
+					var chart = div.append("svg") //d3.select(element[0]).append("svg")
+							.attr("viewBox", "0 0 " + full_width + " " + full_height )
+							.attr("preserveAspectRatio", "xMinYMin")
+							// .attr("width", full_width)
+							// .attr("height", full_height)
+							.append("g") //make a group to hold our pie chart
+							.attr("transform", "translate(" + full_width/2 + "," + full_height/2 + ")"); //move the center of the pie chart from 0, 0 to radius, radius
+
+					chart.append("g")
+							.attr("class", "slices");
+					chart.append("g")
+							.attr("class", "labels");
+					chart.append("g")
+							.attr("class", "lines");
+
+			    var arc = d3.arc()              //this will create <path> elements for us using arc data
+							.innerRadius(0)
+							.outerRadius(r * 0.9);
+							// .startAngle(0)
+							// .endAngle(Math.PI * 2);
+
+					var outerArc = d3.arc()
+							.innerRadius(r * 0.8)
+							.outerRadius(r);
+
+			    var pie = d3.pie()           //this will create arc data for us given a list of values
+							.value(function(d) { return d.value; })
+							(scope.data);    //we must tell it out to access the value of each element in our data array
+					console.log(pie);
+			    var arcs = chart.select(".slices").selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+			        .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
+			        .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+			            .append("g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+			            .attr("class", "slice");    //allow us to style things in the slices (like text)
+
+			        arcs.append("path")
+			                .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+			                .attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+
+					function midAngle(d){
+								return d.startAngle + (d.endAngle - d.startAngle)/2;
+					}
+
+			    var labels = chart.select(".labels").selectAll("text.label")
+											.data(pie)
+											.enter()
+													.append("text")
+													.attr("alignment-baseline", "middle")
+													.attr("class","label")                                     //add a label to each slice
+			                		.attr("transform", function(d) {                    //set the label's origin to the center of the arc
+							                //we have to make sure to set these before calling arc.centroid
+							                d.innerRadius = 0;
+							                d.outerRadius = r;
+															var pos = outerArc.centroid(d);
+															pos[0] = r * (midAngle(d) < Math.PI ? 1 : -1);
+							                return "translate(" + pos + ")";        //this gives us a pair of coordinates like [50, 50]
+			            				})
+							            .attr("text-anchor", function(d){return midAngle(d) < Math.PI ? "start":"end";})                          //center the text on it's origin
+							            .text(function(d) { return d.data.name; }); //.text(function(d, i) { return data[i].name; });
+
+					var lines = chart.select(".lines").selectAll("polyline.line")
+											.data(pie)
+											.enter()
+													.append("polyline")
+													.attr("fill", "none")
+													.attr("stroke", "black")
+													.attr("points",function(d){
+															var pos = outerArc.centroid(d);
+															pos[0] = r * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+															return [arc.centroid(d), outerArc.centroid(d), pos];
+													})
 
 				 }
 			};

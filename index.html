@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Data Dashboard</title>
   </head>
-  <body style="margin:0px; padding-top: 60px;">
+  <body style="margin:0px; padding-top: 30px;">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="#">Data Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,7 @@
     </nav>
     <div id="container" class="container-fluid">
 			<div id="jumbotron" class="jumbotron">
-        <h4>Data Dashboard using Angularjs v1.7 & d3 v5</h4>
+        <h3>Data Dashboard using Angularjs v1.7 & d3 v5</h3>
         <div ng-app="myApp" ng-controller="Ctrl">
           <div class="row">
             <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
@@ -42,6 +42,17 @@
                 <h4 class="card-header">Vertical Bars</h4>
                 <div class="card-body">
                   <v-bars-chart chart-data="myData_2"></v-bars-chart>
+                  <h5 class="card-title">Special title treatment</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
+              <div class="card">
+                <h4 class="card-header">Pie Chart</h4>
+                <div class="card-body">
+                  <pie-chart chart-data="myData_2"></pie-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <a href="#" class="btn btn-primary">Go somewhere</a>
