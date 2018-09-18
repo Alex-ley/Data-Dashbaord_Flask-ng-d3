@@ -111,7 +111,7 @@ var app = angular.module('myApp', []);
 				 replace: false,
 				 scope: {data: '=chartData'},
 				 link: function (scope, element, attrs) {
-					var color = d3.scaleOrdinal(d3.schemeCategory10);
+					var color = d3.scaleOrdinal(d3.schemePastel1); //d3.schemeCategory10
 					var card = d3.select(element[0]).node().parentNode;
 					// console.log(card.getBoundingClientRect());
 
@@ -160,7 +160,8 @@ var app = angular.module('myApp', []);
 	            .attr("class", "bar")
 	            .attr("x", function(d) { return x(2); })
 	            .attr("y", function(d) { return y(d.name); })
-							.attr("fill", function(d, i) { return color(i); } )
+							.attr("fill", function(d, i) { return d3.interpolateRainbow(i * (1 / scope.data.length)); } ) //return color(i)
+							.attr("fill-opacity","0.6")
 	            .attr("width", function(d) { return x(d.value); })
 	            .attr("height", y.bandwidth());
 	        chart.selectAll(".text")
@@ -239,7 +240,8 @@ var app = angular.module('myApp', []);
 	            .attr("class", "bar")
 	            .attr("x", function(d) { return x(d.name); })
 	            .attr("y", function(d) { return y(d.value); })
-							.attr("fill", function(d, i) { return color(i); } )
+							.attr("fill", function(d, i) { return d3.interpolateRainbow(i * (1 / scope.data.length)); } ) //return color(i)
+							.attr("fill-opacity","0.6")
 	            .attr("height", function(d) { return height - y(d.value); })
 	            .attr("width", x.bandwidth());
 	        chart.selectAll(".text")
@@ -324,8 +326,10 @@ var app = angular.module('myApp', []);
 			            .attr("class", "slice");    //allow us to style things in the slices (like text)
 
 			        arcs.append("path")
-			                .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
-			                .attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+			                .attr("fill", function(d, i) { return d3.interpolateRainbow(i * (1 / scope.data.length)); } ) //return color(i) //set the color for each slice to be chosen from the color function defined above
+											.attr("stroke", function(d, i) { return d3.interpolateRainbow(i * (1 / scope.data.length)); } )
+											.attr("fill-opacity","0.6")
+											.attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
 
 					function midAngle(d){
 								return d.startAngle + (d.endAngle - d.startAngle)/2;
@@ -364,3 +368,203 @@ var app = angular.module('myApp', []);
 			};
 			return directiveDefinitionObject;
 	 }]);
+
+	 app.directive('lineChart', ['$parse', function ($parse) {
+		 var directiveDefinitionObject = {
+				 restrict: 'E',
+				 replace: false,
+				 scope: {data: '=chartData'},
+				 link: function (scope, element, attrs) {
+					var color = d3.scaleOrdinal(d3.schemeCategory10);
+					var card = d3.select(element[0]).node().parentNode;
+					// console.log(card.getBoundingClientRect());
+
+	        var margin = {top: 20, right: 30, bottom: 30, left: 40},
+							full_width = 600 //card.getBoundingClientRect().width
+							width = full_width - margin.left - margin.right,
+							// width = 600 - margin.left - margin.right,
+							// height = 400 - margin.top - margin.bottom;
+							full_height = full_width * (2/3),
+							height = full_height - margin.top - margin.bottom;
+
+	        var x = d3.scaleBand()
+	            .rangeRound([0, width])
+							.padding(0.1);
+	        var y = d3.scaleLinear()
+	            .range([height, 0]);
+	        var xAxis = d3.axisBottom(x);
+	        var yAxis = d3.axisLeft(y)
+							.ticks(8);
+					var div = d3.select(element[0]).append("div")
+							.classed("graph", true);
+					div.append("canvas") //To allow correct dynamic sizing for IE
+							.attr("width", full_width)
+							.attr("height", full_height);
+	        var chart = div.append("svg") //d3.select(element[0]).append("svg")
+							.attr("viewBox", "0 0 " + full_width + " " + full_height )
+							.attr("preserveAspectRatio", "xMinYMin")
+	            // .attr("width", full_width)
+	            // .attr("height", full_height)
+	            .append("g")
+	            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+					var yMax = d3.max(scope.data, function(d) { return d.value; })
+					console.log(yMax);
+	        x.domain(scope.data.map(function(d) { return d.name; }));
+	        y.domain([0, yMax]);
+
+	        chart.append("g")
+	            .attr("class", "x axis")
+							.attr("font-size", "14")
+	            .attr("transform", "translate(0," + height + ")")
+	            .call(xAxis);
+	        chart.append("g")
+	            .attr("class", "y axis")
+							.attr("font-size", "14")
+	            .call(yAxis);
+					var line = d3.line()
+							.x(function(d,i){return x(d.name) + (x.bandwidth()/2);})
+							.y(function(d,i){return y(d.value);})
+							.curve(d3.curveCardinal);
+
+	        var path = chart.selectAll(".line")
+	            .data(scope.data);
+	        path.enter().append("path")
+	            .attr("class", "line")
+	            .attr("d", line(scope.data))
+							.attr("stroke", "black")
+							.attr("fill", "none");
+
+					chart.selectAll(".marker")
+	            .data(scope.data)
+	            .enter()
+	            .append("circle")
+	            .attr("class","marker")
+	            .attr("cx", (function(d) { return x(d.name) + (x.bandwidth()/2); })) //to horizontally align in the middle of the bar
+							.attr("fill", "black")
+	            .attr("cy", function(d) { return y(d.value);})
+	            .attr("r", (x.bandwidth()/4)); // function(d) {return (d.value / yMax) * (x.bandwidth()/4) + (x.bandwidth()/4);});
+
+	        chart.selectAll(".text")
+	            .data(scope.data)
+	            .enter()
+	            .append("text")
+	            .attr("class","label")
+	            .attr("x", (function(d) { return x(d.name) + (x.bandwidth()/2); })) //to horizontally align in the middle of the bar
+							.attr("fill", "white")
+							.attr("font-size", "12")
+							.attr("text-anchor","middle") //to horizontally align in the middle of the bar
+							.attr("alignment-baseline", "hanging") //to vetically align in the middle of the bar
+	            .attr("y", function(d) { return y(d.value) - 15; })
+	            .attr("dy", ".75em")
+	            .text(function(d) { return d.value.toFixed(0); });
+
+				 }
+			};
+			return directiveDefinitionObject;
+	 }]);
+
+	app.directive('areaChart', ['$parse', function ($parse) {
+		var directiveDefinitionObject = {
+				restrict: 'E',
+				replace: false,
+				scope: {data: '=chartData'},
+				link: function (scope, element, attrs) {
+				 var color = d3.scaleOrdinal(d3.schemeCategory10);
+				 var card = d3.select(element[0]).node().parentNode;
+				 // console.log(card.getBoundingClientRect());
+
+				 var margin = {top: 20, right: 30, bottom: 30, left: 40},
+						 full_width = 600 //card.getBoundingClientRect().width
+						 width = full_width - margin.left - margin.right,
+						 // width = 600 - margin.left - margin.right,
+						 // height = 400 - margin.top - margin.bottom;
+						 full_height = full_width * (2/3),
+						 height = full_height - margin.top - margin.bottom;
+
+				 var x = d3.scaleBand() //FIGURE THIS OUT
+						 .range([0, width]);
+
+				 var y = d3.scaleLinear()
+						 .range([height, 0]);
+
+				 var xAxis = d3.axisBottom(x);
+				 var yAxis = d3.axisLeft(y)
+						 .ticks(8);
+				 var div = d3.select(element[0]).append("div")
+						 .classed("graph", true);
+				 div.append("canvas") //To allow correct dynamic sizing for IE
+						 .attr("width", full_width)
+						 .attr("height", full_height);
+				 var chart = div.append("svg") //d3.select(element[0]).append("svg")
+						 .attr("viewBox", "0 0 " + full_width + " " + full_height )
+						 .attr("preserveAspectRatio", "xMinYMin")
+						 // .attr("width", full_width)
+						 // .attr("height", full_height)
+						 .append("g")
+						 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				 var yMax = d3.max(scope.data, function(d) { return d.value; })
+				 console.log(yMax);
+				 x.domain(scope.data.map(function(d) { return d.name; }));
+				 y.domain([0, yMax]);
+
+				 var area = d3.area()
+				 		.x(function(d) { return x(d.name); })
+				 		.y1(function(d) { return y(d.value); })
+						.y0(height);
+
+				console.log(area(scope.data));
+
+ 				 var path = chart.append("path")
+ 						 .attr("class", "area")
+ 						 .attr("d", area(scope.data)) // line(scope.data))
+ 						 .attr("fill", "steelblue");
+
+				 xAx = chart.append("g")
+						 .attr("class", "x axis")
+						 .attr("font-size", "14")
+						 .attr("transform", "translate(0," + height + ")")
+						 .call(xAxis);
+
+				xAx.selectAll(".tick")
+							.data(scope.data)
+						 .attr("translate", function(d){"(" + x(d) + ",0)";});
+				 chart.append("g")
+						 .attr("class", "y axis")
+						 .attr("font-size", "14")
+						 .call(yAxis);
+
+				 // var line = d3.line()
+					// 	 .x(function(d,i){return x(d.name) + (x.bandwidth()/2);})
+					// 	 .y(function(d,i){return y(d.value);})
+					// 	 .curve(d3.curveCardinal);
+
+				 // chart.selectAll(".marker")
+					// 	 .data(scope.data)
+					// 	 .enter()
+					// 	 .append("circle")
+					// 	 .attr("class","marker")
+					// 	 .attr("cx", (function(d) { return x(d.name); })) //to horizontally align in the middle of the bar
+					// 	 .attr("fill", "black")
+					// 	 .attr("cy", function(d) { return y(d.value);})
+					// 	 .attr("r", (x(0)/4)); // function(d) {return (d.value / yMax) * (x.bandwidth()/4) + (x.bandwidth()/4);});
+
+				 chart.selectAll(".text")
+						 .data(scope.data)
+						 .enter()
+						 .append("text")
+						 .attr("class","label")
+						 .attr("x", (function(d) { return x(d.name); })) //to horizontally align in the middle of the bar
+						 .attr("fill", "black")
+						 .attr("font-size", "12")
+						 .attr("text-anchor","middle") //to horizontally align in the middle of the bar
+						 .attr("alignment-baseline", "hanging") //to vetically align in the middle of the bar
+						 .attr("y", function(d) { return y(d.value) - 15; })
+						 .attr("dy", ".75em")
+						 .text(function(d) { return d.value.toFixed(0); });
+
+				}
+		 };
+		 return directiveDefinitionObject;
+	}]);
