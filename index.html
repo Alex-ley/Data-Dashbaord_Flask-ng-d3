@@ -35,10 +35,10 @@
               <div class="card">
                 <h4 class="card-header">Horizontal Bars</h4>
                 <div class="card-body">
-                  <h-bars-chart chart-data="myData_2"></h-bars-chart>
+                  <h-bars-chart control="myData_2"></h-bars-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" ng-click="random()" class="btn btn-primary">Randomize Data</a>
                 </div>
               </div>
             </div>
@@ -46,32 +46,32 @@
               <div class="card">
                 <h4 class="card-header">Vertical Bars</h4>
                 <div class="card-body">
-                  <v-bars-chart chart-data="myData_2"></v-bars-chart>
+                  <v-bars-chart control="myData_2"></v-bars-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" ng-click="random()" class="btn btn-primary">Randomize Data</a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
               <div class="card">
                 <h4 class="card-header">Pie Chart</h4>
-                <div class="card-body">
-                  <pie-chart chart-data="myData_2"></pie-chart>
+                <div class="card-body" id="pie-chart">
+                  <pie-chart control="myData_2"></pie-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#pie-chart" ng-click="random()" class="btn btn-primary">Randomize Data</a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6 col-xl-4" style="padding: 10px 10px;">
               <div class="card">
                 <h4 class="card-header">Line Chart</h4>
-                <div class="card-body">
-                  <line-chart chart-data="myData_2"></line-chart>
+                <div class="card-body" id="line-chart">
+                  <line-chart control="myData_2"></line-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#line-chart" class="btn btn-primary">Go somewhere</a>
                 </div>
               </div>
             </div>
@@ -79,7 +79,7 @@
               <div class="card">
                 <h4 class="card-header">Area Chart</h4>
                 <div class="card-body">
-                  <area-chart chart-data="myData_2"></area-chart>
+                  <area-chart control="myData_2"></area-chart>
                   <h5 class="card-title">Special title treatment</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                   <a href="#" class="btn btn-primary">Go somewhere</a>
